@@ -17,7 +17,7 @@ def read_standard_file(path):
             line = line.rstrip('\n')
 
             # "[[" denote the begin of sequence label.
-            if line[:2] == "[[":
+            if line[:2] == "{{":
                 label_col.append(line)
 
             else:
