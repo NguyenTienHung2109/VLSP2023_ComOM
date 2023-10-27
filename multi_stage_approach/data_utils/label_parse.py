@@ -1,6 +1,8 @@
+import sys
+sys.path.append('F:/VLSP2023_ComOM/multi_stage_approach')
 from data_utils import shared_utils
 
-
+import json
 class LabelParser(object):
     def __init__(self, label_col, elem_col, intermittent=False):
         """
@@ -12,7 +14,7 @@ class LabelParser(object):
         self.elem_col = elem_col
         self.intermittent = intermittent
 
-    def parse_sequence_label(self, split_symbol="&", sent_col=None, file_type="cn"):
+    def parse_sequence_label(self, split_symbol="&&", sent_col=None, file_type="vn"):
         """
         :param split_symbol:
         :param sent_col:
@@ -43,7 +45,7 @@ class LabelParser(object):
 
         return elem_representation_col, tuple_pair_col
 
-    def parse_each_pair_label(self, sequence_label, global_elem_col, split_symbol, sent=None, file_type="cn"):
+    def parse_each_pair_label(self, sequence_label, global_elem_col, split_symbol, sent=None, file_type="vn"):
         """
         :param sequence_label:
         :param global_elem_col:
@@ -52,30 +54,26 @@ class LabelParser(object):
         :param file_type:
         :return:
         """
-        elem_representation = shared_utils.split_string(sequence_label[1:-1], ";")
+        elem_representation = json.loads(sequence_label)
+        
+        print("as")
         tuple_pair_representation, result_elem = [], []
-        for elem_index, each_elem in enumerate(elem_representation):
+
+        for elem_index, each_elem in enumerate(elem_representation.values()):
             if elem_index == 3 and each_elem == "[]":
                 print(elem_representation)
-            if self.intermittent:
-                seg_elem_col = shared_utils.split_string(each_elem[1: -1], " , ")
-            else:
-                seg_elem_col = [each_elem[1: -1]] if each_elem[1:-1] != "" else []
 
             elem_tuple = ()
-
             # not polarity
             if elem_index != len(elem_representation) - 1:
-                for each_seg_elem in seg_elem_col:
-                    number_char_col = shared_utils.split_string(each_seg_elem, " ")
-
+                number_char_col = each_elem
+                if number_char_col != []:
                     if file_type == "cn":
                         s_index = int(shared_utils.split_string(number_char_col[0], split_symbol)[0])
                         e_index = int(shared_utils.split_string(number_char_col[-1], split_symbol)[0]) + 1
                     else:
                         s_index = int(shared_utils.split_string(number_char_col[0], split_symbol)[0]) - 1
                         e_index = int(shared_utils.split_string(number_char_col[-1], split_symbol)[0])
-
                     elem_tuple += (s_index, e_index)
 
                     if self.elem_col[elem_index] == "result":
@@ -94,8 +92,9 @@ class LabelParser(object):
                     #         print("----------------------------")
 
             else:
-                polarity = int(seg_elem_col[0])
+                polarity = each_elem
                 elem_tuple += (polarity, polarity)
+                print(elem_tuple)
 
                 # 针对英文中可能存在空的情况
                 if len(result_elem) == 0:

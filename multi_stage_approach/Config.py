@@ -67,7 +67,7 @@ class PathConfig(object):
 class GlobalConfig(object):
     def __init__(self, position_sys):
         self.elem_col = ["entity_1", "entity_2", "aspect", "result"]
-        self.polarity_col = ["Negative", "Equal", "Positive", "None"]
+        self.polarity_col = ["DIF", "EQL", "SUP", "SUP-", "SUP+", "COM", "COM-", "COM+"]
         self.polarity_dict = {k: index - 1 for index, k in enumerate(self.polarity_col)}
 
         if position_sys == "SPAN":

@@ -6,36 +6,35 @@ import torch
 
 # read file to get sentence and label
 def read_standard_file(path):
-    """
-    :param path:
-    :return: sent_col, sent_label_col and label_col
-    """
     sent_col, sent_label_col, final_label_col = [], [], []
-    last_sentence = ""
+    label_col = []
     with open(path, "r", encoding="utf-8") as f:
         for line in f.readlines():
             line = line.rstrip('\n')
 
-            # "[[" denote the begin of sequence label.
-            if line[:2] == "{{":
+
+        # Check if the line is not empty
+        if line:
+            if line.startswith('{"subject":'):
                 label_col.append(line)
 
             else:
-                if last_sentence != "":
-                    cur_sent, cur_sent_label = shared_utils.split_string(last_sentence, "\t")
-                    sent_col.append(cur_sent)
-                    sent_label_col.append(int(cur_sent_label))
+                if label_col:
+                    sent_col.append(line)
+                    sent_label_col.append(1)  # Set the label to 1 if there's a dictionary
                     final_label_col.append(label_col)
+                else:
+                    sent_col.append(line)
+                    sent_label_col.append(0)  # Set the label to 0 if no dictionary
 
-                last_sentence = shared_utils.clear_string(line, replace_symbol={u'\u3000': u""})
                 label_col = []
 
-        cur_sent, cur_sent_label = shared_utils.split_string(last_sentence, "\t")
-        sent_col.append(cur_sent)
-        sent_label_col.append(int(cur_sent_label))
-        final_label_col.append(label_col)
+    # Add an empty dictionary for sentences that don't have a dictionary
+    for i, label in enumerate(sent_label_col):
+        if label == 0:
+            final_label_col.insert(i, ["[[];[];[];[];[]]"])
 
-        return sent_col, sent_label_col, final_label_col
+    return sent_col, sent_label_col, final_label_col
 
 
 ########################################################################################################################
