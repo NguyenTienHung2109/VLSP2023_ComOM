@@ -2,10 +2,10 @@ import torch
 import copy
 import torch.nn as nn
 import sys
-sys.path.append('content/VLSP2023_ComOM')  # Adjust the path to match your project's directory structure
-from multi_stage_approach.data_utils import shared_utils, data_loader_utils
-from multi_stage_approach.model_utils import pipeline_model_utils, optimizer_utils
-from multi_stage_approach.data_utils import current_program_code as cpc
+sys.path.append('multi_stage_approach')  # Adjust the path to match your project's directory structure
+from data_utils import shared_utils, data_loader_utils
+from model_utils import pipeline_model_utils, optimizer_utils
+from data_utils import current_program_code as cpc
 from tqdm import tqdm
 
 

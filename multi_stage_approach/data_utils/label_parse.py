@@ -1,5 +1,5 @@
 import sys
-sys.path.append('F:/VLSP2023_ComOM/multi_stage_approach')
+sys.path.append('multi_stage_approach')
 from data_utils import shared_utils
 
 import json
@@ -93,7 +93,23 @@ class LabelParser(object):
 
             else:
                 polarity = each_elem
-                elem_tuple += (polarity, polarity)
+                if polarity == 'DIF':
+                    po = 0
+                if polarity == 'EQL':
+                    po = 1
+                if polarity == 'SUP+':
+                    po = 2
+                if polarity == 'SUP-':
+                    po = 3
+                if polarity == 'SUP':
+                    po = 4
+                if polarity == 'COM+':
+                    po = 5
+                if polarity == 'COM-':
+                    po = 6
+                if polarity == 'COM':
+                    po = 7
+                elem_tuple += (po, po)
                 print(elem_tuple)
 
                 # 针对英文中可能存在空的情况

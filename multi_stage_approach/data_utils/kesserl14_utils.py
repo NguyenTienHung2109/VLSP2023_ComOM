@@ -3,7 +3,7 @@ import numpy as np
 from data_utils.label_parse import LabelParser
 from data_utils import shared_utils
 from data_utils import current_program_code as cpc
-from open_source_utils import stanford_utils
+from open_source_utils import phobert_utils
 from transformers import BertTokenizer
 
 
@@ -36,11 +36,11 @@ class DataGenerator(object):
         sent_col, sent_label_col, label_col = cpc.read_standard_file(data_path)
 
         LP = LabelParser(label_col, ["entity_1", "entity_2", "aspect", "result"])
-        label_col, tuple_pair_col = LP.parse_sequence_label("&&", sent_col, file_type="eng")
+        label_col, tuple_pair_col = LP.parse_sequence_label("&&", sent_col, file_type="vn")
 
         # using stanford tool to get some feature data.
         if not os.path.exists(self.config.path.pre_process_data[data_type]):
-            sf = stanford_utils.stanfordFeature(sent_col, self.config.path.stanford_path)
+            sf = phobert_utils.phobertFeature(sent_col)
             data_dict['standard_token'] = sf.get_tokenizer()
             shared_utils.write_pickle(data_dict, self.config.path.pre_process_data[data_type])
 
@@ -118,17 +118,23 @@ class DataGenerator(object):
 
     def generate_data(self):
         self.train_data_dict = self.create_data_dict(
-            self.config.path.standard_path['train'],
+            "data/VLSP2023_ComOM_training_v2/train_0001.txt",
             "train"
         )
+        for i in range(2, 58):
+            pointer = f"{i:04d}"
+            self.train_data_dict.update(self.create_data_dict(
+                "data/VLSP2023_ComOM_training_v2/train_" + pointer + ".txt",
+                "train")
+            )
 
-        self.dev_data_dict = self.create_data_dict(
-            self.config.path.standard_path['dev'],
+        self.train_data_dict = self.create_data_dict(
+            "data/VLSP2023_ComOM_training_v2/train_0059.txt",
             "dev"
         )
 
-        self.test_data_dict = self.create_data_dict(
-            self.config.path.standard_path['test'],
+        self.train_data_dict = self.create_data_dict(
+            "data/VLSP2023_ComOM_training_v2/train_0060.txt",
             "test"
         )
 

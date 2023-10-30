@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from multi_stage_approach.model_utils import layer_utils as Layer
+from model_utils import layer_utils as Layer
 
 
 class Baseline(nn.Module):
