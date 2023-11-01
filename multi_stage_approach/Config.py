@@ -1,5 +1,5 @@
 from data_utils import shared_utils
-from transformers import BertTokenizer
+from transformers import AutoModel, AutoTokenizer
 
 
 class BaseConfig(object):
@@ -32,7 +32,7 @@ class BaseConfig(object):
         )
         self.val = GlobalConfig(self.position_sys)
         print('self.path.bert_model_path', self.path.bert_model_path)
-        self.bert_tokenizer = BertTokenizer.from_pretrained(self.path.bert_model_path)
+        self.bert_tokenizer = AutoTokenizer.from_pretrained(self.path.bert_model_path)
 
 
 class PathConfig(object):
@@ -52,15 +52,15 @@ class PathConfig(object):
             self.stanford_path = r"D:/stanford-corenlp-full-2018-10-05"
             self.bert_model_path = r"D:/base_uncased/" if file_type == "Camera-COQE" else r"D:/base_chinese/"
         else:
-            self.stanford_path = premodel_path + "stanford-corenlp-full-2018-02-27"
-            self.bert_model_path = premodel_path + "base_uncased/" if file_type == "Camera-COQE" else premodel_path + "base_chinese/"
+            self.stanford_path = premodel_path
+            self.bert_model_path = premodel_path + "base_uncased/" if file_type == "Camera-COQE" else premodel_path
             self.GloVe_path = premodel_path + "vector/glove.840B.300d.txt"
             self.Word2Vec_path = premodel_path + "vector/word2vec.txt"
 
         self.pre_process_data = {
-            "train": "../data/pre_process/{}_train_data.txt".format(file_type),
-            "dev": "../data/pre_process/{}_dev_data.txt".format(file_type),
-            "test": "../data/pre_process/{}_test_data.txt".format(file_type)
+            "train": "../data/VLSP2023_ComOM_training_v2/train_0001.txt".format(file_type),
+            "dev": "../data/VLSP2023_ComOM_training_v2/train_0001.txt".format(file_type),
+            "test": "../data/VLSP2023_ComOM_training_v2/train_0001.txt".format(file_type)
         }
 
 

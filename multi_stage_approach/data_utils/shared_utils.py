@@ -124,9 +124,9 @@ def parameters_to_model_name(param_dict):
     model_name = model_name.replace("test", "run")
 
     if not os.path.exists(os.path.join(result_file, model_name)):
-        os.mkdir(os.path.join(result_file, model_name))
+        os.makedirs(os.path.join(result_file, model_name), exist_ok=True)
     if not os.path.exists(os.path.join(model_file, model_name)):
-        os.mkdir(os.path.join(model_file, model_name))
+        os.makedirs(os.path.join(model_file, model_name), exist_ok=True)
 
     model_name += "/"
     if model_param is not None:
@@ -974,8 +974,12 @@ def read_pickle(path):
     :return:
     """
     with open(path, "rb") as f:
-        data = pickle.load(f)
-    return data
+        try:
+            data = pickle.load(f)
+            return data
+        except pickle.UnpicklingError as e:
+            print("Error while unpickling:", e)
+    
 
 
 def write_pickle(data_dict, path):

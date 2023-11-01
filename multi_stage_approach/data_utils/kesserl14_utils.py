@@ -5,6 +5,7 @@ from data_utils import shared_utils
 from data_utils import current_program_code as cpc
 from open_source_utils import phobert_utils
 from transformers import BertTokenizer
+from transformers import AutoModel, AutoTokenizer
 
 
 class DataGenerator(object):
@@ -20,7 +21,7 @@ class DataGenerator(object):
 
         # store some data using in model
         self.train_data_dict, self.dev_data_dict, self.test_data_dict = {}, {}, {}
-        self.bert_tokenizer = BertTokenizer.from_pretrained(config.path.bert_model_path)
+        self.bert_tokenizer = AutoTokenizer.from_pretrained(config.path.bert_model_path)
 
         self.elem_col = ["entity_1", "entity_2", "aspect", "result"]
 
@@ -46,7 +47,7 @@ class DataGenerator(object):
 
         else:
             data_dict = shared_utils.read_pickle(self.config.path.pre_process_data[data_type])
-
+        print(shared_utils.get_max_token_length(data_dict['standard_token']))
         self.token_max_len = max(self.token_max_len, shared_utils.get_max_token_length(data_dict['standard_token']))
 
         data_dict['label_col'] = label_col
@@ -118,23 +119,23 @@ class DataGenerator(object):
 
     def generate_data(self):
         self.train_data_dict = self.create_data_dict(
-            "data/VLSP2023_ComOM_training_v2/train_0001.txt",
+            "../data/VLSP2023_ComOM_training_v2/train_0001.txt",
             "train"
         )
         for i in range(2, 58):
             pointer = f"{i:04d}"
             self.train_data_dict.update(self.create_data_dict(
-                "data/VLSP2023_ComOM_training_v2/train_" + pointer + ".txt",
+                "../data/VLSP2023_ComOM_training_v2/train_" + pointer + ".txt",
                 "train")
             )
 
         self.train_data_dict = self.create_data_dict(
-            "data/VLSP2023_ComOM_training_v2/train_0059.txt",
+            "../data/VLSP2023_ComOM_training_v2/train_0059.txt",
             "dev"
         )
 
         self.train_data_dict = self.create_data_dict(
-            "data/VLSP2023_ComOM_training_v2/train_0060.txt",
+            "../data/VLSP2023_ComOM_training_v2/train_0060.txt",
             "test"
         )
 
